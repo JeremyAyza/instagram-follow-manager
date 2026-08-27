@@ -1,0 +1,36 @@
+{
+  "name": "instagram-follow-manager",
+  "version": "2.0.0",
+  "description": "Gestión avanzada de seguidores para Instagram con WXT, React y TypeScript.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "postinstall": "wxt prepare"
+  },
+  "dependencies": {
+    "lucide-react": "^0.475.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/chrome": "^0.0.304",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@wxt-dev/module-react": "1.1.3",
+    "autoprefixer": "^10.5.4",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.7.3",
+    "wxt": "^0.19.26"
+  },
+  "overrides": {
+    "vite": "6.4.3"
+  }
+}
