@@ -112,7 +112,7 @@ export function useInstagramScan() {
     
     const { igSession } = await chrome.storage.local.get('igSession');
     if (!igSession || !igSession.headers) {
-      setErrorMessage('No se han interceptado headers. Navega por Instagram un momento.');
+      setErrorMessage('No se encontró la sesión de Instagram. Recarga la página con tu cuenta iniciada.');
       return;
     }
 
@@ -164,7 +164,7 @@ export function useInstagramScan() {
     
     const { igSession } = await chrome.storage.local.get('igSession');
     if (!igSession || !igSession.headers) {
-      setErrorMessage('No se han interceptado headers.');
+      setErrorMessage('No se encontró la sesión de Instagram. Recarga la página con tu cuenta iniciada.');
       return;
     }
 

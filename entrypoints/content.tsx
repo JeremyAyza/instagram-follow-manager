@@ -45,15 +45,6 @@ export default defineContentScript({
     // Y también cuando la ventana carga por si acaso
     window.addEventListener('load', extractFromCookies);
 
-    // 2. Mantener el listener del inyector como respaldo para headers más complejos
-    window.addEventListener('message', (event) => {
-      if (event.source !== window) return;
-      if (event.data?.type === 'IG_CREDENTIALS') {
-        chrome.storage.local.set({ igSession: event.data.data });
-        console.log('[IG-EXT] Credenciales actualizadas desde el MAIN world interceptor.');
-      }
-    });
-
     const ui = await createShadowRootUi(ctx, {
       name: 'instagram-follow-manager-ui',
       position: 'inline',
