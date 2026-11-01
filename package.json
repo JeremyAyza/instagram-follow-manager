@@ -2,6 +2,8 @@
   "name": "instagram-follow-manager",
   "version": "2.0.0",
   "description": "Gestión avanzada de seguidores para Instagram con WXT, React y TypeScript.",
+  "author": "Jeremy Ayza",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "scripts": {
