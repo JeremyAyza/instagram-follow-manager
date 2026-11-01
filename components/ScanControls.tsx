@@ -193,7 +193,6 @@ export const ScanControls: React.FC<ScanControlsProps> = ({
               <div className="font-semibold capitalize text-[11px] truncate">
                 {status === 'fetching_following' && 'Extrayendo Seguidos de IG...'}
                 {status === 'fetching_followers' && 'Extrayendo Seguidores de IG...'}
-                {status === 'comparing' && 'Procesando datos...'}
               </div>
               <div className="flex gap-2 text-[10px] text-slate-400 mt-1">
                 {status === 'fetching_following' && (

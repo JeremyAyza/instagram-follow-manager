@@ -232,14 +232,11 @@ export function useInstagramScan() {
     });
   };
 
-  const toggleSelectAll = () => {
-    if (selectedIds.size === filteredUsers.length) {
-      setSelectedIds(new Set());
-    } else {
-      const next = new Set<string>();
-      filteredUsers.forEach(u => next.add(u.id));
-      setSelectedIds(next);
-    }
+  // Recibe los IDs visibles (ya filtrados por la búsqueda) para no
+  // seleccionar cuentas que el usuario no está viendo.
+  const toggleSelectAll = (visibleIds: string[]) => {
+    const allVisibleSelected = visibleIds.length > 0 && visibleIds.every(id => selectedIds.has(id));
+    setSelectedIds(allVisibleSelected ? new Set() : new Set(visibleIds));
   };
 
   const importData = useCallback((data: { following?: InstagramUser[], followers?: InstagramUser[] }) => {

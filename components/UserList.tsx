@@ -11,7 +11,7 @@ interface UserListProps {
   activeTab: FilterTab;
   onTabChange: (tab: FilterTab) => void;
   onToggleUser: (id: string) => void;
-  onToggleAll: () => void;
+  onToggleAll: (visibleIds: string[]) => void;
   onStartUnfollow: () => void;
 }
 
@@ -32,7 +32,7 @@ export const UserList: React.FC<UserListProps> = ({
     u.full_name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const allSelected = users.length > 0 && selectedIds.size === users.length;
+  const allSelected = filtered.length > 0 && filtered.every(u => selectedIds.has(u.id));
 
   const tabs: { id: FilterTab; label: string }[] = [
     { id: 'all', label: 'Todos' },
@@ -98,7 +98,7 @@ export const UserList: React.FC<UserListProps> = ({
         </div>
 
         <button
-          onClick={onToggleAll}
+          onClick={() => onToggleAll(filtered.map(u => u.id))}
           className="py-2 px-3 bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl text-xs text-slate-300 flex items-center gap-1.5 cursor-pointer shrink-0 transition-colors"
         >
           {allSelected ? (
@@ -148,7 +148,8 @@ export const UserList: React.FC<UserListProps> = ({
                   alt={user.username}
                   className="w-10 h-10 rounded-full object-cover border border-slate-700/50 shrink-0 bg-slate-800"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${user.username}&background=0f172a&color=5eead4`;
+                    // Sin servicio externo de avatares: queda el círculo de fondo.
+                    (e.target as HTMLImageElement).style.visibility = 'hidden';
                   }}
                 />
 
