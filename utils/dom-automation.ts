@@ -5,16 +5,21 @@
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+// Texto exacto del botón cuando ya no sigues a la cuenta. Se compara completo:
+// "Following" contiene "follow" y "Dejar de seguir" contiene "seguir".
+const FOLLOW_TEXTS = ['seguir', 'follow', 'seguir también', 'follow back'];
+
 /**
- * Busca un botón en el documento que contenga alguno de los textos indicados.
+ * Busca un botón en el documento que contenga alguno de los textos indicados,
+ * o que sea exactamente uno de ellos si `exact` es true.
  */
-function findButtonWithText(texts: string[], parent: ParentNode = document): HTMLButtonElement | null {
+function findButtonWithText(texts: string[], parent: ParentNode = document, exact = false): HTMLButtonElement | null {
   const buttons = Array.from(parent.querySelectorAll('button, div[role="button"]')) as HTMLButtonElement[];
   const normalizedTexts = texts.map(t => t.toLowerCase());
 
   for (const btn of buttons) {
     const btnText = (btn.innerText || btn.textContent || '').trim().toLowerCase();
-    if (normalizedTexts.some(t => btnText.includes(t))) {
+    if (normalizedTexts.some(t => (exact ? btnText === t : btnText.includes(t)))) {
       return btn;
     }
   }
@@ -61,7 +66,7 @@ export async function executeProfileUnfollowDOM(): Promise<UnfollowResult> {
 
     if (!followingBtn) {
       // Si ya dice "Seguir" o "Follow", ya no lo seguimos
-      const alreadyFollowBtn = findButtonWithText(['seguir', 'follow']);
+      const alreadyFollowBtn = findButtonWithText(FOLLOW_TEXTS, document, true);
       if (alreadyFollowBtn) {
         return { success: true, message: 'El usuario ya no se estaba siguiendo.' };
       }
@@ -97,11 +102,10 @@ export async function executeProfileUnfollowDOM(): Promise<UnfollowResult> {
 
     // Paso 3: Verificación de éxito: Esperar hasta 15s a que aparezca un botón que diga "Seguir" / "Follow"
     const startTime = Date.now();
-    const successTexts = ['seguir', 'follow'];
 
     while (Date.now() - startTime < 15000) {
       await delay(500);
-      const followBtn = findButtonWithText(successTexts);
+      const followBtn = findButtonWithText(FOLLOW_TEXTS, document, true);
       if (followBtn && followBtn.offsetHeight > 0) {
         return { success: true, message: 'Éxito: Cambió a "Seguir".' };
       }

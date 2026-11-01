@@ -1,7 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { InstagramUser, UnfollowProgressState } from '../types/instagram';
 import { executeProfileUnfollowDOM } from '../utils/dom-automation';
-import { useSettings } from './useSettings';
 import { APP_CONFIG } from '../utils/constants';
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -31,7 +30,6 @@ export function useDOMUnfollower() {
   });
 
   const [unfollowSummary, setUnfollowSummary] = useState<UnfollowSummaryData | null>(null);
-  const { settings } = useSettings();
 
   const shouldStopRef = useRef<boolean>(false);
   const isPausedRef = useRef<boolean>(false);
@@ -169,13 +167,16 @@ export function useDOMUnfollower() {
 
   // Efecto de inicialización para recuperar sesión en caso de recarga
   useEffect(() => {
-    chrome.storage.local.get(['unfollowSession'], (res) => {
+    // La configuración se lee de storage junto con la sesión: el estado de
+    // useSettings todavía no está cargado al montar.
+    chrome.storage.local.get(['unfollowSession', 'appSettings'], (res) => {
       if (res.unfollowSession) {
         const session = res.unfollowSession as StoredSession;
+        const autoResume = res.appSettings?.autoResumeOnRefresh ?? true;
         // Solo reanudamos si no había terminado y no estábamos ya procesando en esta instancia
         if (session.progress.currentIndex < session.progress.total && !processingRef.current) {
           // Solo reanudamos automáticamente si la configuración lo permite Y el usuario NO lo había pausado manualmente.
-          if (settings.autoResumeOnRefresh && !session.progress.isPaused) {
+          if (autoResume && !session.progress.isPaused) {
              console.log('[IG-EXT] Reanudando sesión de unfollow automáticamente tras corte abrupto...');
              session.progress.isPaused = false;
              runQueue(session);
