@@ -68,7 +68,7 @@ export async function fetchUsersList(
       const data = await response.json() as InstagramAPIResponse;
 
       if (!data.users || !Array.isArray(data.users)) {
-        break;
+        throw new Error('Respuesta inesperada de Instagram: falta la lista de usuarios.');
       }
 
       const mappedUsers: InstagramUser[] = data.users.map((u: InstagramAPIUser) => {
@@ -106,9 +106,10 @@ export async function fetchUsersList(
         }
       }
     } catch (err) {
+      // Propagar el error: devolver una lista parcial haría que cuentas que sí
+      // te siguen aparezcan como "no te siguen".
       console.error(`Error obteniendo ${type}:`, err);
-      await delay(5000);
-      break;
+      throw err;
     }
   } while (hasMore && nextMaxId);
 
